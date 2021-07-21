@@ -15,8 +15,8 @@ for i = 1:size(imgPathes,1)  % for each 3D image
 end
 
 
-function [counto, cc, zz] = countImgObjects(imgPath_i, imgPathOri)
-
+function [counto,zz,cc] = countImgObjects(imgPath_i, imgPathOri)
+%% Setting params
 % Calculating binarization threshold coefficient J 
 M=0;
 imgPathAll = dir([imgPathOri '/' imgPath_i '_C003Z*']);
@@ -33,6 +33,7 @@ J=0.022*mean1+0.3861;%The fitted curve based on the three groups of average gray
 l=0.5101;w=0.5101;h=1;
 %Setting Maximum diameter and minimum diameter
 Md=5;md=0.5;
+
 %% Loading Images
 for n=1:length(imgPathAll)
     imgPath = [imgPathOri '/' imgPathAll(n).name];
@@ -88,9 +89,8 @@ for n=1:length(imgPathAll)
     r=imfill(R);
 
     %% creating volume
-      Q=double(r).*double(gray);  
-      model1(:,:,n)=Q;
-      model2=model1;
+    Q=double(r).*double(gray);  
+    model1(:,:,n)=Q;
 end
 
 %% Screening bacteria 
@@ -119,6 +119,7 @@ for v1=1:height(stats)
     end
 end
 c=c-1;
+
 %% counting mean fluorescence intensities and volume
 C=zeros(1,9);
 Z=zeros(1,4);
@@ -156,6 +157,7 @@ for k=1:c
      end
 end
 cc=C./c;
+
 %% Counting bacterial load          
 for o=1:length(imgPathAll)
     E=model1(:,:,o);
@@ -164,6 +166,22 @@ for o=1:length(imgPathAll)
     STATS2 = regionprops(L4,'all');        
     counto(o)=length(STATS2);
 end
+
+%% The final volume properties
+CC1 = bwconncomp(model1);
+L5 = labelmatrix(CC1);
+stats1 = regionprops3(L5,model1,'all');         
+                
+              
+              
+        
+
+
+
+
+
+
+
                 
               
               
